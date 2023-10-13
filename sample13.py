@@ -1,44 +1,92 @@
-from PyPDF2 import PdfReader
+# from PyPDF2 import PdfReader
 
-def search_pdf_and_extract_nearby_text(pdf_file_path, keyword, num_lines=20):
-    """Searches all pages of the given PDF document for the given keyword and extracts nearby text.
+# def search_pdf_and_extract_nearby_text(pdf_file_path, keyword, num_lines=20):
+#     """Searches all pages of the given PDF document for the given keyword and extracts nearby text.
 
-    Args:
-        pdf_file_path: The path to the PDF file.
-        keyword: The keyword to search for.
-        num_lines: Number of lines to extract around the keyword (default is 20).
+#     Args:
+#         pdf_file_path: The path to the PDF file.
+#         keyword: The keyword to search for.
+#         num_lines: Number of lines to extract around the keyword (default is 20).
 
-    Returns:
-        A string containing the nearby text of the keyword found in any page.
-    """
-    # Open the PDF file.
-    pdf_reader = PdfReader(pdf_file_path)
+#     Returns:
+#         A string containing the nearby text of the keyword found in any page.
+#     """
+#     # Open the PDF file.
+#     pdf_reader = PdfReader(pdf_file_path)
 
-    nearby_text = ""
-    # Iterate through all the pages of the PDF.
-    for page in pdf_reader.pages:
-        # Extract the text from the current page.
-        text = page.extract_text()
-        # Split the text into lines.
-        lines = text.split("\n")
-        # Find the index of the line containing the keyword.
-        keyword_line_indices = [i for i in range(len(lines)) if keyword in lines[i]]
+#     nearby_text = ""
+#     # Iterate through all the pages of the PDF.
+#     for page in pdf_reader.pages:
+#         # Extract the text from the current page.
+#         text = page.extract_text()
+#         # Split the text into lines.
+#         lines = text.split("\n")
+#         # Find the index of the line containing the keyword.
+#         keyword_line_indices = [i for i in range(len(lines)) if keyword in lines[i]]
 
-        # Extract nearby text for each occurrence of the keyword on the page.
-        for keyword_line_index in keyword_line_indices:
-            start_index = max(0, keyword_line_index - num_lines // 2)
-            end_index = min(len(lines), keyword_line_index + num_lines // 2 + 1)
-            nearby_text += " ".join(lines[start_index:end_index]) + "\n"
+#         # Extract nearby text for each occurrence of the keyword on the page.
+#         for keyword_line_index in keyword_line_indices:
+#             start_index = max(0, keyword_line_index - num_lines // 2)
+#             end_index = min(len(lines), keyword_line_index + num_lines // 2 + 1)
+#             nearby_text += " ".join(lines[start_index:end_index]) + "\n"
 
-    return nearby_text
+#     return nearby_text
 
-# Example usage:
-pdf_file_path = r"C:\Users\M_Thiruveedula\Downloads\Projects_Code_Backup\Genus\RFP-214.pdf"
-keyword = "Overview of the AMISP Scope of Work"
+# # Example usage:
+# pdf_file_path = r"C:\Users\M_Thiruveedula\Downloads\Projects_Code_Backup\Genus\RFP-214.pdf"
+# keyword = "Overview of the AMISP Scope of Work"
 
-nearby_text = search_pdf_and_extract_nearby_text(pdf_file_path, keyword, num_lines=20)
+# nearby_text = search_pdf_and_extract_nearby_text(pdf_file_path, keyword, num_lines=20)
 
-print(nearby_text)
+# print(nearby_text)
+
+# from PyPDF2 import PdfReader
+
+# def search_pdf_and_extract_nearby_text(pdf_file_path, keyword, num_lines=20, ignore_pages=None):
+#     """Searches all pages of the given PDF document for the given keyword and extracts nearby text.
+
+#     Args:
+#         pdf_file_path: The path to the PDF file.
+#         keyword: The keyword to search for.
+#         num_lines: Number of lines to extract around the keyword (default is 20).
+#         ignore_pages: List of page numbers to ignore during extraction.
+
+#     Returns:
+#         A string containing the nearby text of the keyword found in any page.
+#     """
+#     # Open the PDF file.
+#     pdf_reader = PdfReader(pdf_file_path)
+
+#     nearby_text = ""
+#     # Iterate through all the pages of the PDF.
+#     for page_num, page in enumerate(pdf_reader.pages, start=1):
+#         if ignore_pages and page_num in ignore_pages:
+#             continue
+
+#         # Extract the text from the current page.
+#         text = page.extract_text()
+#         # Split the text into lines.
+#         lines = text.split("\n")
+#         # Find the index of the line containing the keyword.
+#         keyword_line_indices = [i for i in range(len(lines)) if keyword in lines[i]]
+
+#         # Extract nearby text for each occurrence of the keyword on the page.
+#         for keyword_line_index in keyword_line_indices:
+#             start_index = max(0, keyword_line_index - num_lines // 2)
+#             end_index = min(len(lines), keyword_line_index + num_lines // 2 + 1)
+#             nearby_text += " ".join(lines[start_index:end_index]) + "\n"
+
+#     return nearby_text
+
+# # Example usage with ignoring pages 9, 28, and 29:
+# pdf_file_path = r"C:\Users\M_Thiruveedula\Downloads\Projects_Code_Backup\Genus\RFP-214.pdf"
+# keyword = "Overview of the AMISP Scope of Work"
+# ignore_pages = [9, 28, 29, 159]
+
+# nearby_text = search_pdf_and_extract_nearby_text(pdf_file_path, keyword, num_lines=20, ignore_pages=ignore_pages)
+
+# print(nearby_text)
+
 
 # from PyPDF2 import PdfReader
 
@@ -80,3 +128,55 @@ print(nearby_text)
 # nearby_text = search_pdf_and_extract_nearby_text(pdf_file_path, keyword)
 
 # print(nearby_text)
+
+
+from PyPDF2 import PdfReader
+
+def search_pdf_and_extract_nearby_text(pdf_file_path, keyword, num_lines=40, ignore_pages=None):
+    """Searches all pages of the given PDF document for the given keyword and extracts nearby text.
+
+    Args:
+        pdf_file_path: The path to the PDF file.
+        keyword: The keyword to search for.
+        num_lines: Number of lines to extract around the keyword (default is 40).
+        ignore_pages: List of page numbers to ignore during extraction.
+
+    Returns:
+        A string containing the nearby text of the keyword found in any page.
+    """
+    # Open the PDF file.
+    pdf_reader = PdfReader(pdf_file_path)
+
+    nearby_text = ""
+    # Iterate through all the pages of the PDF.
+    for page_num, page in enumerate(pdf_reader.pages, start=1):
+        if ignore_pages and page_num in ignore_pages:
+            continue
+
+        # Extract the text from the current page.
+        text = page.extract_text()
+        # Split the text into lines.
+        lines = text.split("\n")
+        # Find the index of the line containing the keyword.
+        keyword_line_indices = [i for i in range(len(lines)) if keyword in lines[i]]
+
+        # Extract nearby text for each occurrence of the keyword on the page.
+        for keyword_line_index in keyword_line_indices:
+            if "Section 6. Project Requirements " in lines[keyword_line_index]:
+                continue  # Skip this line if it contains the specified text.
+            
+            start_index = max(0, keyword_line_index - num_lines // 2)
+            end_index = min(len(lines), keyword_line_index + num_lines // 2 + 1)
+            nearby_text += " ".join(lines[start_index:end_index]) + "\n"
+
+    return nearby_text
+
+# Example usage with ignoring pages 9, 28, 29, and 159, and excluding lines with "Section 6. Project Requirements":
+pdf_file_path = r"C:\Users\M_Thiruveedula\Downloads\Projects_Code_Backup\Genus\RFP-214.pdf"
+keyword = "Overview of the AMISP Scope of Work"
+ignore_pages = [9, 28, 29, 159]
+
+nearby_text = search_pdf_and_extract_nearby_text(pdf_file_path, keyword, num_lines=40, ignore_pages=ignore_pages)
+
+print(nearby_text)
+
